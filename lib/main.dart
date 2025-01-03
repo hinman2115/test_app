@@ -2,26 +2,37 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'auto_commit.dart';
+
 void main() {
   runApp(const MyApp());
 }
-
 class Movie {
   final String title;
   final String poster;
+  final String genre;
+  final String released;
+  final String plot;
 
   Movie({
     required this.title,
     required this.poster,
+    required this.genre,
+    required this.released,
+    required this.plot,
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
     return Movie(
       title: json['Title'] ?? 'N/A',
       poster: json['Poster'] ?? '',
+      genre: json['Genre'] ?? 'N/A',
+      released: json['Released'] ?? 'N/A',
+      plot: json['Plot'] ?? 'No plot available',
     );
   }
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -129,7 +140,19 @@ class _MyHomePageState extends State<MyHomePage> {
           final movie = _movies[index];
           return ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
-            child: Image.network(
+            child:GestureDetector(
+
+              onTap:(){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MovieDetailPage(movie: movie),
+                  ),
+                );
+
+              },
+              child:  Image.network(
+
               movie.poster,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
@@ -141,6 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
             ),
+            )
           );
         },
       ),
